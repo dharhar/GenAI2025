@@ -117,11 +117,11 @@ def get_profile():
 def transcribe():
     return transcribe_api()
 
-@app.route("/medical_inference")
+# @app.route("/medical_inference")
 
-@app.route("/signup")
+# @app.route("/signup")
 
-@app.route("/login")
+# @app.route("/login")
 
 
 

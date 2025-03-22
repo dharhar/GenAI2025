@@ -11,4 +11,3 @@ def setup():
 def transcribe_api(model, audio_file):
     return transcribe(model, audio_file)
 
-def medical_inference_api()
