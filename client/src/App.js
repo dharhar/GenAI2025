@@ -3,6 +3,8 @@ import Navbar from "./components/navbar"
 import Home from "./pages/home"
 import SignIn from "./pages/signin"
 import SignUp from "./pages/signup"
+import Dashboard from "./pages/dashboard"
+import Onboarding from "./pages/onboarding"
 import About from "./pages/about"
 import Features from "./pages/features"
 import "./App.css"
@@ -17,6 +19,8 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/signup" element={<SignUp />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/onboarding" element={<Onboarding />} />
             <Route path="/about" element={<About />} />
             <Route path="/features" element={<Features />} />
             
@@ -34,4 +38,3 @@ function App() {
 }
 
 export default App
-

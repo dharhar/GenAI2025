@@ -31,38 +31,16 @@ function SignUp() {
       setError("Passwords do not match")
       return
     }
-
+    
+    // Set loading state for better UX
     setLoading(true)
-
-    try {
-      const response = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-        }),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to sign up")
-      }
-
-      // Store token or user data in localStorage or context
-      localStorage.setItem("token", data.token)
-
-      // Redirect to dashboard or onboarding
+    
+    // Simulate a brief loading state before redirecting
+    setTimeout(() => {
+      // Simply navigate to onboarding page
       navigate("/onboarding")
-    } catch (err) {
-      setError(err.message || "An error occurred during sign up")
-    } finally {
       setLoading(false)
-    }
+    }, 800)
   }
 
   return (
@@ -193,4 +171,3 @@ function SignUp() {
 }
 
 export default SignUp
-
