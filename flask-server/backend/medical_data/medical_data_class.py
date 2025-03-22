@@ -10,15 +10,17 @@ class UserMedicalProfile():
     password: str
     name: str
     age: int
+    gender: str
     medical_conditions: dict
     
 
-    def __init__(self, user_id: int, username: str, password: str, name: str, age: int, medical_conditions: dict):
+    def __init__(self, user_id: int, username: str, password: str, name: str, age: int, gender: str, medical_conditions: dict):
         self.user_id = user_id
         self.username = username
         self.password = password
         self.name = name
         self.age = age
+        self.gender = gender
         self.medical_conditions = medical_conditions
     
     def to_dict(self):
@@ -28,6 +30,7 @@ class UserMedicalProfile():
             "password": self.password,
             "name": self.name,
             "age": self.age,
+            "gender": self.gender,
             "medical_conditions": self.medical_conditions
         }
         return data
