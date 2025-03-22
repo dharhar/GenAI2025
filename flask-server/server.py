@@ -128,5 +128,6 @@ def transcribe():
 
 
 if __name__ == '__main__':
+    model, tokenizer, deepspeech_model = setup()
     app.run(debug=True, port=5000)
 

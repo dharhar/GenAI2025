@@ -1,5 +1,5 @@
 flask
-deepspeech
+deepspeech==0.9.3
 torch
 transformers
 cryptography
