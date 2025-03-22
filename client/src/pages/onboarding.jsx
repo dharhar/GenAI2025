@@ -10,7 +10,7 @@ function Onboarding() {
     gender: "",
     height: "",
     weight: "",
-    activityLevel: "",
+    // activityLevel: "",
   })
   const [loading, setLoading] = useState(false)
 
@@ -111,7 +111,7 @@ function Onboarding() {
               </div>
             </div>
 
-            <div>
+            {/* <div>
               <label htmlFor="activityLevel" className="block text-sm font-medium text-gray-700">
                 Activity Level
               </label>
@@ -130,7 +130,7 @@ function Onboarding() {
                 <option value="active">Active (hard exercise 6-7 days/week)</option>
                 <option value="very-active">Very active (very hard exercise & physical job)</option>
               </select>
-            </div>
+            </div> */}
 
             <div className="pt-4">
               <button

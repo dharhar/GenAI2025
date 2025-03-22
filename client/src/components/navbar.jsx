@@ -7,7 +7,7 @@ function Navbar() {
   // const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   return (
-    <header className="fixed top-0 left-0 right-0 w-full bg-[#1c2128] py-3 px-2 border-b border-gray-700">
+    <header className="fixed top-0 left-0 right-0 w-full bg-[#1c2128] py-3 px-2 border-b border-gray-700 z-50">
       <div className="flex items-center justify-between px-2 z-50">
         {/* Logo and Brand */}
         <div className="flex items-center">

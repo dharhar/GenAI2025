@@ -1,29 +1,27 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 // import { CheckIcon } from 'lucide-react';
+import Navbar from '../components/navbar';
 
 
-function PricingPage() {
+function About() {
     return (
       <div className="bg-gradient-to-r from-blue-50 to-indigo-50 py-16 px-4 sm:px-6 lg:px-8">
+        <Navbar />
         <div className="container mx-auto flex flex-col md:flex-row items-center">
           <div className="md:w-1/2 mb-10 md:mb-0 md:pr-10">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight my-6">
-              We are happy to announce that HealthCompanion is completely free!
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight my-10">
+              HealthCompanion is a free app
             </h1>
             <p className="text-xl text-gray-600 mb-8">
-              Our goals with this project was to create a product that can be accessed
-              by anyone and everyone, and also using AI to empower users interested in our product!
+              that aims to create a product that can be accessed
+              by anyone and everyone, while using AI to empower interested users!
               <br /> <br />
-              If you would like to support us, then you can give us a follow on our LinkedIn pages!
+              If you would like to support us, consider following our LinkedIn pages!
               Apart from empowering users, we want all of you to invest in yourselves more than anything
               to ensure your success and wellbeing!
             </p>
-            {/* <p className="text-xl text-gray-600 mb-8">
-              Our goals with this project was to create a product that can be accessed
-              by anyone and everyone, and also using AI to empower users interested in our product!
-            </p> */}
-            <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+            <div className="flex flex-col sm:flex-row gap-4">
               <Link 
                 to="/signup" 
                 className="px-8 py-3 bg-blue-600 text-white text-center font-medium rounded-md hover:bg-blue-700 transition"
@@ -212,4 +210,4 @@ function PricingPage() {
 //   );
 // }
 
-export default PricingPage;
+export default About;
