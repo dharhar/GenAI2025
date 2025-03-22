@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import elderlySpeaker from '../assets/elderly-speaker.jpg'
 
 function HeroSection() {
   return (
@@ -28,9 +29,9 @@ function HeroSection() {
             </Link>
           </div>
         </div>
-        <div className="md:w-1/2">
+        <div className="md:w-1/2 mt-10">
           <img 
-            src="/placeholder.svg?height=400&width=500" 
+            src={elderlySpeaker}
             alt="Elderly person using voice assistant" 
             className="rounded-lg shadow-xl"
           />
