@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from backend.backend_api import *
 from flask_cors import CORS
 import jwt
 import datetime
@@ -111,6 +112,18 @@ def get_profile():
         return jsonify({'message': 'Token expired'}), 401
     except jwt.InvalidTokenError:
         return jsonify({'message': 'Invalid token'}), 401
+
+@app.route("/transcribe")
+def transcribe():
+    return transcribe_api()
+
+@app.route("/medical_inference")
+
+@app.route("/signup")
+
+@app.route("/login")
+
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

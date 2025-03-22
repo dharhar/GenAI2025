@@ -8,16 +8,20 @@ class UserMedicalProfile():
     user_id: int
     username: str
     password: str
+    weight: int
+    height: int
     name: str
     age: int
     gender: str
     medical_conditions: dict
     
 
-    def __init__(self, user_id: int, username: str, password: str, name: str, age: int, gender: str, medical_conditions: dict):
+    def __init__(self, user_id: int, username: str, password: str, weight: float, height: float, name: str, age: int, gender: str, medical_conditions: dict):
         self.user_id = user_id
         self.username = username
         self.password = password
+        self.weight = weight
+        self.height = height
         self.name = name
         self.age = age
         self.gender = gender
@@ -28,6 +32,8 @@ class UserMedicalProfile():
             "user_id": self.user_id,
             "username": self.username,
             "password": self.password,
+            "weight": self.weight,
+            "height": self.height,
             "name": self.name,
             "age": self.age,
             "gender": self.gender,
