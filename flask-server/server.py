@@ -1,10 +1,11 @@
+import sys
+import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from flask import Flask, request, jsonify
 from backend_api import *
 from flask_cors import CORS
 import jwt
 import datetime
-import os
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
