@@ -2,3 +2,5 @@ flask
 deepspeech
 torch
 transformers
+cryptography
+python-dotenv
