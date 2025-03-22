@@ -1,4 +1,5 @@
 import { Shield, Stethoscope, Bell, Clock, Users, HeartPulse, Mic, Phone } from "lucide-react"
+import Navbar from "../components/navbar"
 
 function FeaturesPage() {
   const features = [
@@ -54,8 +55,9 @@ function FeaturesPage() {
 
   return (
     <div className="bg-white">
+      <Navbar />
       {/* Header */}
-      <div className="bg-[#1c2128] py-16 px-4 sm:px-6 lg:px-8 text-center mt-14">
+      <div className="bg-[#2c333e] py-16 px-4 sm:px-6 lg:px-8 text-center mt-14">
         <h1 className="text-4xl font-bold text-white mb-4">Powerful Features for Better Health</h1>
         <p className="text-xl text-gray-300 max-w-3xl mx-auto">
           HealthCompanion combines advanced AI technology with an accessible voice interface to provide comprehensive
@@ -84,7 +86,7 @@ function FeaturesPage() {
       </div>
 
       {/* How It Works Section */}
-      <div className="bg-gray-50 py-16 px-4 sm:px-6 lg:px-8">
+      <div className="bg-gray-100 py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto text-center mb-12">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">How HealthCompanion Works</h2>
           <p className="text-xl text-gray-600">
@@ -172,13 +174,13 @@ function FeaturesPage() {
       </div>
 
       {/* CTA Section */}
-      <div className="bg-[#1c2128] py-12 px-4 sm:px-6 lg:px-8">
+      <div className="bg-[#2c333e] py-12 px-4 sm:px-6 lg:px-8 mt-20">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-3xl font-bold text-white mb-4">Ready to experience HealthCompanion?</h2>
           <p className="text-xl text-gray-300 mb-8">
             Join thousands of users who are already benefiting from our voice-activated health advisor.
           </p>
-          <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
             <a
               href="/signup"
               className="px-8 py-3 bg-yellow-500 text-gray-900 font-medium rounded-md hover:bg-yellow-400 transition"
