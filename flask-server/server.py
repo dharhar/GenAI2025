@@ -17,105 +17,33 @@ CORS(app)  # Enable CORS for all routes
 users_db = {}
 SECRET_KEY = os.environ.get('JWT_SECRET_KEY', 'dev-secret-key')
 
-# Authentication routes
-@app.route('/api/auth/signup', methods=['POST'])
-def signup():
-    data = request.get_json()
-    
-    # Validate input
-    if not data or not data.get('email') or not data.get('password') or not data.get('name'):
-        return jsonify({'message': 'Missing required fields'}), 400
-    
-    email = data['email']
-    
-    # Check if user already exists
-    if email in users_db:
-        return jsonify({'message': 'User already exists'}), 409
-    
-    # Create new user
-    users_db[email] = {
-        'name': data['name'],
-        'email': email,
-        'password': generate_password_hash(data['password'])
-    }
-    
-    # Generate JWT token
-    token = jwt.encode({
-        'sub': email,
-        'name': data['name'],
-        'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1)
-    }, SECRET_KEY, algorithm='HS256')
-    
-    return jsonify({
-        'token': token,
-        'user': {
-            'email': email,
-            'name': data['name']
-        }
-    }), 201
-
-@app.route('/api/auth/signin', methods=['POST'])
-def signin():
-    data = request.get_json()
-    
-    # Validate input
-    if not data or not data.get('email') or not data.get('password'):
-        return jsonify({'message': 'Missing email or password'}), 400
-    
-    email = data['email']
-    
-    # Check if user exists
-    if email not in users_db:
-        return jsonify({'message': 'Invalid email or password'}), 401
-    
-    user = users_db[email]
-    
-    # Verify password
-    if not check_password_hash(user['password'], data['password']):
-        return jsonify({'message': 'Invalid email or password'}), 401
-    
-    # Generate JWT token
-    token = jwt.encode({
-        'sub': email,
-        'name': user['name'],
-        'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1)
-    }, SECRET_KEY, algorithm='HS256')
-    
-    return jsonify({
-        'token': token,
-        'user': {
-            'email': email,
-            'name': user['name']
-        }
-    }), 200
-
 # Protected route example
-@app.route('/api/user/profile', methods=['GET'])
-def get_profile():
-    auth_header = request.headers.get('Authorization')
+# @app.route('/api/user/profile', methods=['GET'])
+# def get_profile():
+#     auth_header = request.headers.get('Authorization')
     
-    if not auth_header or not auth_header.startswith('Bearer '):
-        return jsonify({'message': 'Missing or invalid token'}), 401
+#     if not auth_header or not auth_header.startswith('Bearer '):
+#         return jsonify({'message': 'Missing or invalid token'}), 401
     
-    token = auth_header.split(' ')[1]
+#     token = auth_header.split(' ')[1]
     
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
-        email = payload['sub']
+#     try:
+#         payload = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+#         email = payload['sub']
         
-        if email not in users_db:
-            return jsonify({'message': 'User not found'}), 404
+#         if email not in users_db:
+#             return jsonify({'message': 'User not found'}), 404
         
-        user = users_db[email]
+#         user = users_db[email]
         
-        return jsonify({
-            'email': email,
-            'name': user['name']
-        }), 200
-    except jwt.ExpiredSignatureError:
-        return jsonify({'message': 'Token expired'}), 401
-    except jwt.InvalidTokenError:
-        return jsonify({'message': 'Invalid token'}), 401
+#         return jsonify({
+#             'email': email,
+#             'name': user['name']
+#         }), 200
+#     except jwt.ExpiredSignatureError:
+#         return jsonify({'message': 'Token expired'}), 401
+#     except jwt.InvalidTokenError:
+#         return jsonify({'message': 'Invalid token'}), 401
 
 @app.route("/", methods=['GET'])
 def health_check():
@@ -131,8 +59,12 @@ def transcribe():
 @app.route('/medical_inference', methods=['POST'])
 def medical_inference():
     
+    print("="*50)
+    print("in medical")
+    print("="*50)
+
     username = request.form.get("username")
-    prompt = request.files.get("prompt")
+    prompt = request.form.get("prompt")
     
     current_dir = os.path.dirname(os.path.abspath(__file__))
     load_dotenv()
@@ -143,7 +75,13 @@ def medical_inference():
     for user in data:
         if user["username"] == username:
             user_class = UserMedicalProfile(user["user_id"], user["username"], user["password"], user["weight"], user["height"], user["name"], user["age"], user["gender"], user["medical_conditions"])
-            return diagnoisis_cb(user_class, model, tokenizer, prompt)
+            ret = diagnoisis_cb(user_class, model, tokenizer, prompt)
+            print("="*50)
+            print(ret)
+            print("="*50)
+            return ret
+        
+    print("HELLO")
     
 
 @app.route("/signup", methods=["POST"])
@@ -151,25 +89,51 @@ def signup():
     
     username = request.form.get('username')
     password = request.form.get('password')
-    weight = request.form.get('weight', type=float)
-    height = request.form.get('height', type=float)
-    name = request.form.get('name')
-    age = request.form.get('age')
-    gender = request.form.get('gender')
+
+    # DEFAULT VALUES
+    weight = 60
+    height = 170
+    name = "John Smith"
+    age = 23
+    gender = "Male"
+
+    print("=" * 50)
+    print(username)
+    print("=" * 50)
+
+    # weight = request.form.get('weight', type=float)
+    # height = request.form.get('height', type=float)
+    # name = request.form.get('name')
+    # age = request.form.get('age')
+    # gender = request.form.get('gender')
     
     current_dir = os.path.dirname(os.path.abspath(__file__))
     load_dotenv()
     cipher = Fernet(os.getenv("FERNET_KEY"))
     data_path = current_dir + "./medical_data/user_data.json"
     data = load_data(data_path, cipher)
+    print("TESTING")
+    print(data)
     for user in data:
-        if username == user["username"]:
+        if username == user["username"]: # found duplicate username
             return 404
-    new_user = UserMedicalProfile(len(data) + 1, username, password, weight, height, name, age, gender, {})
+    new_user = UserMedicalProfile(len(data) + 1, username, password, weight, height, name, age, gender, {"Headache/Migraine": "2 years of constant migraines"})
     new_user.save_to_data(data_path, cipher)
-    return 200
+    print("RETURNING 200")
+    # print(new_user)
+    # print("+======")
+    return jsonify({
+        "message": "User created successfully",
+        "user": {
+            "id": len(data) + 1,
+            "username": username,
+            "name": name,
+            "age": age,
+            "gender": gender
+        }
+    }), 200
 
-@app.route("/login")
+@app.route("/login", methods=['POST'])
 def login():
     
     username = request.form.get('username')

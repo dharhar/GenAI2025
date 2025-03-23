@@ -10,36 +10,39 @@ import Dashboard from "./dashboard/dashboard"
 import ChatPage from "./dashboard/chat/chat"
 import ProfilePage from "./dashboard/profile/profile"
 import SettingsPage from "./dashboard/settings/settings"
+import { AuthProvider } from "./context/AuthContext"
 import "./App.css"
 
 function App() {
   return (
     <Router>
-      <div className="min-h-screen flex flex-col">
-        {/* <Navbar /> */}
-        <main className="flex-grow">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/signin" element={<SignIn />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/onboarding" element={<Onboarding />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/features" element={<Features />} />
-            <Route path="/faqs" element={<FAQ />} />            
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/dashboard/chat" element={<ChatPage />} />
-            <Route path="/dashboard/profile" element={<ProfilePage />} />
-            <Route path="/dashboard/settings" element={<SettingsPage />} />
-            
-            {/* Add more routes as needed */}
-          </Routes>
-        </main>
-        <footer className="bg-[#1c2128] text-gray-300 py-6 border-t border-gray-700">
-          <div className="container mx-auto px-4">
-            <p className="text-center">© {new Date().getFullYear()} HealthCompanion. All rights reserved.</p>
-          </div>
-        </footer>
-      </div>
+      <AuthProvider>
+        <div className="min-h-screen flex flex-col">
+          {/* <Navbar /> */}
+          <main className="flex-grow">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/signin" element={<SignIn />} />
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/onboarding" element={<Onboarding />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/features" element={<Features />} />
+              <Route path="/faqs" element={<FAQ />} />            
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/dashboard/chat" element={<ChatPage />} />
+              <Route path="/dashboard/profile" element={<ProfilePage />} />
+              <Route path="/dashboard/settings" element={<SettingsPage />} />
+              
+              {/* Add more routes as needed */}
+            </Routes>
+          </main>
+          <footer className="bg-[#1c2128] text-gray-300 py-6 border-t border-gray-700">
+            <div className="container mx-auto px-4">
+              <p className="text-center">© {new Date().getFullYear()} EchoHealth. All rights reserved.</p>
+            </div>
+          </footer>
+        </div>
+      </AuthProvider>
     </Router>
   )
 }

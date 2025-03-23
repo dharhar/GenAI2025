@@ -5,10 +5,11 @@ import Sidebar from "../../components/sidebar"
 import { Send, Mic, Square } from "react-feather"
 import logo from "../../assets/logo.jpg"
 import { User } from 'react-feather';
-// Remove this import as we'll use the browser's native MediaRecorder
-// import MediaRecorder from 'media-recorder-js'
+import { useAuth } from '../../context/AuthContext'
 
 const ChatPage = () => {
+  const { user } = useAuth();
+
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -58,10 +59,10 @@ const ChatPage = () => {
     checkMicrophoneAccess();
   }, []);
 
-  const handleSendMessage = () => {
-    if (!newMessage.trim()) return
+  const handleSendMessage = async () => {
+    // if (!newMessage.trim()) return
 
-    // Add user message
+    // // Add user message
     const userMessage = {
       id: Date.now(),
       sender: "user",
@@ -72,16 +73,48 @@ const ChatPage = () => {
     setMessages((prevMessages) => [...prevMessages, userMessage])
     setNewMessage("")
 
-    // Simulate assistant response after a short delay
-    setTimeout(() => {
-      const assistantMessage = {
-        id: Date.now() + 1,
-        sender: "assistant",
-        text: "I've received your message. Our health team will get back to you soon.",
-        timestamp: new Date(),
+    
+    try {
+      const chatData = new FormData()
+      chatData.append('username', user?.username)
+      chatData.append('prompt', newMessage.trim())
+
+      console.log("ZZZZ")
+      const resp = await fetch('http://localhost:5000/medical_inference', {
+        method: 'POST',
+        body: chatData
+      })
+      
+
+      if (!resp.ok) {
+        throw new Error(`Failed medical_inference: ${resp.status}`)
       }
-      setMessages((prevMessages) => [...prevMessages, assistantMessage])
-    }, 1000)
+
+      const textData = await resp.text()
+
+
+      // Simulate assistant response after a short delay
+      setTimeout(() => {
+          const assistantMessage = {
+              id: Date.now() + 1,
+              sender: "assistant",
+              text: textData,
+              timestamp: new Date(),
+          }
+          setMessages((prevMessages) => [...prevMessages, assistantMessage])
+      }, 1000)
+
+    } catch (error) {
+        console.error("Error sending message:", error)
+        // Show error in chat
+        const errorMessage = {
+            id: Date.now() + 1,
+            sender: "assistant",
+            text: `Unable to send message: ${error.message}. Please try again.`,
+            timestamp: new Date(),
+        }
+        setMessages((prevMessages) => [...prevMessages, errorMessage])
+    }
   }
 
   const toggleRecording = async () => {
@@ -176,36 +209,21 @@ const ChatPage = () => {
     if (!blob) return
 
     // Create a form data object to send the audio file
-    const formData = new FormData()
-    formData.append('audio', blob, 'recording.' + (blob.type.split('/')[1] || 'webm'))
+    const transcribeData = new FormData()
+    transcribeData.append('audio', blob, 'recording.' + (blob.type.split('/')[1] || 'webm'))
 
     try {
         const response = await fetch('http://localhost:5000/transcribe', {
             method: 'POST',
-            body: formData
+            body: transcribeData
         })
         
         if (!response.ok) {
             throw new Error(`Failed to send audio: ${response.status}`)
         }
 
-        // console.log(response.text())
         const data = await response.text() // this is already transcribed
-        // console.log(data)
-        // const transcription = data.transcription || "Transcription Unavailable"
-        // console.log(transcription)
-
-        // Add user audio message to chat
-        // const audioMessage = {
-        //     id: Date.now(),
-        //     sender: "user",
-        //     isAudio: true,
-        //     audioUrl: url,
-        //     timestamp: new Date(),
-        // }
-
-        // setMessages((prevMessages) => [...prevMessages, audioMessage])
-
+        
         // Add transcription message
         const transcriptionMessage = {
           id: Date.now() + 1,
@@ -217,12 +235,27 @@ const ChatPage = () => {
         setMessages((prevMessages) => [...prevMessages, transcriptionMessage])       
         setRecordedUrl("")
 
+        const chatData = new FormData()
+        chatData.append('username', user?.username)
+        chatData.append('prompt', data)
+
+        const resp = await fetch('http://localhost:5000/medical_inference', {
+          method: 'POST',
+          body: chatData
+        })
+
+        if (!resp.ok) {
+          throw new Error(`Failed medical_inference: ${resp.status}`)
+        }
+
+        const textData = await resp.text()
+
         // Simulate assistant response after a short delay
         setTimeout(() => {
             const assistantMessage = {
                 id: Date.now() + 1,
                 sender: "assistant",
-                text: "I've received your audio message. Our health team will listen to it and get back to you soon.",
+                text: textData,
                 timestamp: new Date(),
             }
             setMessages((prevMessages) => [...prevMessages, assistantMessage])
@@ -259,7 +292,7 @@ const ChatPage = () => {
               )}
             </div>
 
-            <div className="card-content h-[calc(100vh-20rem)] overflow-y-auto pr-4">
+            <div className="card-content h-[calc(95vh-20rem)] overflow-y-auto pr-4">
               <div className="space-y-4">
                 {messages.map((message) => (
                   <div

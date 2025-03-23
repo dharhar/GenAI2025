@@ -30,17 +30,23 @@ def create_user_information_context(user_data: UserMedicalProfile):
     """
     # context = "The patient "+ user_data.name + " is a "+ str(user_data.age) +"-year-old "+ user_data.gender + " who is " + str(user_data.weight) + " kilograms and " + str(user_data.height) +" centimeters tall with the following medical conditions: \n"
     context = f"""
-        The patient {user_data.name} is a {user_data.age}-year old {user_data.gender} who is {user_data.weight} kilograms and {user_data.height} centimeters tall with the following medical conditions: \n 
+        The patient {user_data.username} is a {user_data.age}-year old {user_data.gender} who is {user_data.weight} kilograms and {user_data.height} centimeters tall \n 
         With the following conditions:
         - {user_data.medical_conditions}
     """
     return context
 
 def diagnoisis_cb(user_data: UserMedicalProfile, model: AutoModel, tokenizer: AutoTokenizer, current_symptoms: str):
-    
+
     context = create_user_information_context(user_data)
-    context += "The patient currently says: " + current_symptoms
-    question = "What is the likely diagnosis?"    
+    print("="*50)
+    print("CONTEXT: ", context)
+    print("="*50)
+    print("="*50)
+    print("CURRENT_SYMPTOMS: ", current_symptoms)
+    print("="*50)
+    context += "The patient currently feels: " + current_symptoms
+    question = "What is the likely diagnosis? Do not repeat any of the user's prior medical history."    
     input_text = f"question: {question}  context: {context}"
     # Tokenize the input
     inputs = tokenizer(input_text, return_tensors="pt", padding=True, truncation=True)

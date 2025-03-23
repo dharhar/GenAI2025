@@ -3,10 +3,12 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import Navbar from "../components/navbar"
+import { useAuth } from "../context/AuthContext"
 
 function SignIn() {
+  const { login } = useAuth()
   const [formData, setFormData] = useState({
-    email: "",
+    username: "",
     password: "",
   })
   const [error, setError] = useState("")
@@ -27,22 +29,30 @@ function SignIn() {
     setLoading(true)
 
     try {
-      const response = await fetch("/api/auth/signin", {
+      console.log(formData)
+      const response = await fetch("http://localhost:5000/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       })
+      console.log("AAA")
 
       const data = await response.json()
+      console.log(data)
 
       if (!response.ok) {
         throw new Error(data.message || "Failed to sign in")
       }
 
+      login({
+        username: formData.username,
+        email: formData.email,
+      })
+
       // Store token or user data in localStorage or context
-      localStorage.setItem("token", data.token)
+      // localStorage.setItem("token", data.token)
 
       // Redirect to dashboard
       navigate("/dashboard")
@@ -94,17 +104,17 @@ function SignIn() {
 
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email address
+              <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                Username
               </label>
               <div className="mt-1">
                 <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
+                  id="username"
+                  name="username"
+                  type="username"
+                  autoComplete="username"
                   required
-                  value={formData.email}
+                  value={formData.username}
                   onChange={handleChange}
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />

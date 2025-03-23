@@ -17,7 +17,7 @@ function Navbar() {
           <Link to="/" className="text-gray-300 hover:text-white transition mr-6">
             {/* Home */}
             <div className="bg-white p-1 rounded">
-            <span className="text-[#1c2128] font-bold text-xl">HealthCompanion</span>
+            <span className="text-[#1c2128] font-bold text-xl">EchoHealth</span>
           </div>
           </Link>
           <Link to="/features" className="text-gray-300 hover:text-white transition mr-6">
@@ -46,7 +46,7 @@ function Navbar() {
             to="/signup"
             className="px-4 py-1.5 bg-yellow-500 text-gray-900 font-medium rounded hover:bg-yellow-400 transition"
           >
-            Sign-up
+            Sign Up
           </Link>
         </div>
       </div>

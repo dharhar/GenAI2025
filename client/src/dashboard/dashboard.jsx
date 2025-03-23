@@ -4,8 +4,10 @@ import { useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import Sidebar from "../components/sidebar"
 import MedicalHistoryTab from "./medical-history"
+import { useAuth } from "../context/AuthContext"
 
 const Dashboard = () => {
+  const { user } = useAuth();
   const location = useLocation()
   const navigate = useNavigate()
   const queryParams = new URLSearchParams(location.search)
@@ -24,7 +26,9 @@ const Dashboard = () => {
       <div className="main-content">
         <div className="space-y-6">
           <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-bold">Welcome back!</h1>
+            <h1 className="text-3xl font-bold">
+              Welcome back{user?.username ? `, ${user.username}!` : "!"}            
+            </h1>
           </div>
 
           <div className="tabs">

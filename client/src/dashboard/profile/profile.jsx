@@ -3,9 +3,11 @@
 import { useState } from "react"
 import Sidebar from "../../components/sidebar"
 import { User } from 'react-feather';
+import { useAuth } from "../../context/AuthContext";
 
 const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState("details")
+  const { user } = useAuth()
 
   return (
     <div className="main-layout">
@@ -29,10 +31,12 @@ const ProfilePage = () => {
                 </div>
                 <button className="btn btn-outline btn-sm">Change Photo</button>
                 <div className="text-center">
-                  {/* TODO: update according to current user */}
-                  <h3 className="font-medium text-lg">John Doe</h3>
+                  <h3 className="font-medium text-lg">{user ? user.username : ''}</h3>
+                  <p className="text-sm text-muted">{user ? user.email : ''}</p>
+              
+                  {/* <h3 className="font-medium text-lg">John Doe</h3>
                   <p className="text-sm text-muted">john.doe@example.com</p>
-                  <p className="text-sm text-muted">Member since Jan 2023</p>
+                  <p className="text-sm text-muted">Member since Jan 2023</p> */}
                 </div>
               </div>
             </div>
@@ -72,31 +76,32 @@ const ProfilePage = () => {
                           <label htmlFor="first-name" className="form-label">
                             First Name
                           </label>
-                          <input id="first-name" className="form-input" defaultValue="John" />
+                          <input id="first-name" className="form-input" defaultValue="" />
+                          {/* <p className="text-sm text-muted">{user ? user.email : ''}</p> */}
                         </div>
                         <div className="form-group">
                           <label htmlFor="last-name" className="form-label">
                             Last Name
                           </label>
-                          <input id="last-name" className="form-input" defaultValue="Doe" />
+                          <input id="last-name" className="form-input" defaultValue="" />
                         </div>
                         <div className="form-group">
                           <label htmlFor="email" className="form-label">
                             Email
                           </label>
-                          <input id="email" type="email" className="form-input" defaultValue="john.doe@example.com" />
+                          <input id="email" type="email" className="form-input" defaultValue="" />
                         </div>
                         <div className="form-group">
                           <label htmlFor="phone" className="form-label">
                             Phone
                           </label>
-                          <input id="phone" type="tel" className="form-input" defaultValue="+1 (555) 123-4567" />
+                          <input id="phone" type="tel" className="form-input" defaultValue="" />
                         </div>
                         <div className="form-group md:col-span-2">
                           <label htmlFor="address" className="form-label">
                             Address
                           </label>
-                          <input id="address" className="form-input" defaultValue="123 Health St, Wellness City" />
+                          <input id="address" className="form-input" defaultValue="" />
                         </div>
                       </div>
                       <button className="btn btn-primary mt-4 px-6 py-1">Save Changes</button>
@@ -110,13 +115,13 @@ const ProfilePage = () => {
                           <label htmlFor="height" className="form-label">
                             Height (cm)
                           </label>
-                          <input id="height" type="number" className="form-input" defaultValue="175" />
+                          <input id="height" type="number" className="form-input" defaultValue={user?.height || ""} />
                         </div>
                         <div className="form-group">
                           <label htmlFor="weight" className="form-label">
                             Weight (kg)
                           </label>
-                          <input id="weight" type="number" className="form-input" defaultValue="70" />
+                          <input id="weight" type="number" className="form-input" defaultValue={user?.weight || ""} />
                         </div>
                         
                       </div>

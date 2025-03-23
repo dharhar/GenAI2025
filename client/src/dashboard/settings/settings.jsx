@@ -53,7 +53,7 @@ const SettingsPage = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <label htmlFor="units" className="form-label">
-                        Use Metric Units
+                        Use Imperial Units
                       </label>
                       <p className="text-sm text-muted">Toggle between imperial and metric units</p>
                     </div>

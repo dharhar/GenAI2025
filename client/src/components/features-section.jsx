@@ -87,7 +87,7 @@ function FeaturesSection() {
       <div className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="container mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">How HealthCompanion Helps</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">How EchoHealth Helps</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Our voice-activated AI assistant is designed specifically for elderly users, making healthcare management
               simple and accessible.

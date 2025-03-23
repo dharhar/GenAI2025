@@ -3,7 +3,6 @@ import wave
 import os
 import numpy as np
 
-
 def setup_deepspeech():
     """Setsup a deepspeech model
     """
@@ -22,6 +21,9 @@ def transcribe(model: Model, audio_file: str):
         model (Model): Deepspeech model
         audio_file (str): audio file path
     """
+    print("+" * 50)
+    print("TRANSCRIBING")
+    print("+" * 50)
     # Open audio file
     with wave.open(audio_file, "r") as audio_file:
         frames = audio_file.readframes(audio_file.getnframes())

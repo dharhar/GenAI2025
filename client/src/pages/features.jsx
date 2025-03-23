@@ -6,7 +6,7 @@ function FeaturesPage() {
     {
       title: "Secure Authentication",
       description:
-        "HealthCompanion employs end-to-end encryption and HIPAA-compliant security measures to protect your sensitive medical information. We use multi-factor authentication and regular security audits to ensure your data remains private and secure.",
+        "EchoHealth employs end-to-end encryption and HIPAA-compliant security measures to protect your sensitive medical information. We use multi-factor authentication and regular security audits to ensure your data remains private and secure.",
       icon: <Shield className="h-10 w-10 text-blue-500" />,
     },
     {
@@ -24,7 +24,7 @@ function FeaturesPage() {
     {
       title: "24/7 Emergency Assistance",
       description:
-        "In case of emergency, HealthCompanion can immediately connect you with emergency services or designated caregivers. The system can detect distress in your voice and automatically initiate emergency protocols when needed.",
+        "In case of emergency, EchoHealth can immediately connect you with emergency services or designated caregivers. The system can detect distress in your voice and automatically initiate emergency protocols when needed.",
       icon: <Clock className="h-10 w-10 text-blue-500" />,
     },
     {
@@ -60,7 +60,7 @@ function FeaturesPage() {
       <div className="bg-[#2c333e] py-16 px-4 sm:px-6 lg:px-8 text-center mt-14">
         <h1 className="text-4xl font-bold text-white mb-4">Powerful Features for Better Health</h1>
         <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-          HealthCompanion combines advanced AI technology with an accessible voice interface to provide comprehensive
+          EchoHealth combines advanced AI technology with an accessible voice interface to provide comprehensive
           health support for elderly users.
         </p>
       </div>
@@ -88,7 +88,7 @@ function FeaturesPage() {
       {/* How It Works Section */}
       <div className="bg-gray-100 py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">How HealthCompanion Works</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">How EchoHealth Works</h2>
           <p className="text-xl text-gray-600">
             Our voice-activated health advisor is designed to be intuitive and easy to use.
           </p>
@@ -176,7 +176,7 @@ function FeaturesPage() {
       {/* CTA Section */}
       <div className="bg-[#2c333e] py-12 px-4 sm:px-6 lg:px-8 mt-20">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">Ready to experience HealthCompanion?</h2>
+          <h2 className="text-3xl font-bold text-white mb-4">Ready to experience EchoHealth?</h2>
           <p className="text-xl text-gray-300 mb-8">
             Join thousands of users who are already benefiting from our voice-activated health advisor.
           </p>

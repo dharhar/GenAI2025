@@ -10,7 +10,6 @@ function Onboarding() {
     gender: "",
     height: "",
     weight: "",
-    // activityLevel: "",
   })
   const [loading, setLoading] = useState(false)
 

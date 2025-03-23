@@ -11,7 +11,7 @@ function About() {
         <div className="container mx-auto flex flex-col md:flex-row items-center">
           <div className="md:w-1/2 mb-10 md:mb-0 md:pr-10">
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight my-10">
-              HealthCompanion is a free app
+              EchoHealth is a free app
             </h1>
             <p className="text-xl text-gray-600 mb-8">
               that aims to create a product that can be accessed
