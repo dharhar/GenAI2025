@@ -76,6 +76,11 @@ class UserMedicalProfile():
                 f.write(encrypted_data)
 
 
+def load_data(user_data_path: str, cipher: Fernet):
+    with open(user_data_path, "rb") as file:
+        encrypted_data = file.read()
+    return json.loads(cipher.decrypt(encrypted_data))
+
 def load_user_from_data(user_data_path: str, cipher: Fernet, username: str, password: str):
     """Loads a user from user_data.json
 
