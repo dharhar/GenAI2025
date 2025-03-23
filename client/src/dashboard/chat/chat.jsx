@@ -5,6 +5,8 @@ import Sidebar from "../../components/sidebar"
 import { Send, Mic, Square } from "react-feather"
 import logo from "../../assets/logo.jpg"
 import { User } from 'react-feather';
+// Remove this import as we'll use the browser's native MediaRecorder
+// import MediaRecorder from 'media-recorder-js'
 
 const ChatPage = () => {
   const [messages, setMessages] = useState([
@@ -19,6 +21,7 @@ const ChatPage = () => {
   const messagesEndRef = useRef(null)
   const [recordedUrl, setRecordedUrl] = useState("")
   const [isRecording, setIsRecording] = useState(false)
+  const [recordingError, setRecordingError] = useState("")
   const mediaStream = useRef(null)
   const mediaRecorder = useRef(null)
   const chunks = useRef([])
@@ -31,6 +34,29 @@ const ChatPage = () => {
   useEffect(() => {
     scrollToBottom()
   }, [messages])
+
+  // Check for microphone availability on component mount
+  useEffect(() => {
+    const checkMicrophoneAccess = async () => {
+      try {
+        // Just check if we can access a microphone
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const hasAudioInput = devices.some(device => device.kind === 'audioinput');
+        
+        if (!hasAudioInput) {
+          setRecordingError("No microphone detected on this device");
+        } else {
+          // Clear any previous errors if microphone is available
+          setRecordingError("");
+        }
+      } catch (err) {
+        console.error("Error checking microphone access:", err);
+        setRecordingError(`Microphone access error: ${err.message}`);
+      }
+    };
+    
+    checkMicrophoneAccess();
+  }, []);
 
   const handleSendMessage = () => {
     if (!newMessage.trim()) return
@@ -59,6 +85,12 @@ const ChatPage = () => {
   }
 
   const toggleRecording = async () => {
+    // If there's a recording error, alert the user and return
+    if (recordingError && !isRecording) {
+      alert(recordingError);
+      return;
+    }
+
     if (isRecording) {
       // Stop recording
       if (mediaRecorder.current && mediaRecorder.current.state === "recording") {
@@ -72,54 +104,129 @@ const ChatPage = () => {
     } else {
       // Start recording
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-        mediaStream.current = stream
-        mediaRecorder.current = new MediaRecorder(stream)
+        // Request with audio constraints and ensure we get a real audio device
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true
+          } 
+        });
+        
+        // Check if we actually got audio tracks
+        if (stream.getAudioTracks().length === 0) {
+          throw new Error("No audio track available");
+        }
+        
+        mediaStream.current = stream;
+        
+        // Use browser's native MediaRecorder with fallback for different formats
+        const mimeTypes = ['audio/wav'];
+        let mimeType = '';
+        
+        // Find a supported mime type
+        for (const type of mimeTypes) {
+          if (MediaRecorder.isTypeSupported(type)) {
+            mimeType = type;
+            break;
+          }
+        }
+        
+        // Configure MediaRecorder with supported format
+        const options = mimeType ? { mimeType, audioBitsPerSecond: 128000 } : {};
+        mediaRecorder.current = new MediaRecorder(stream, options);
+
+        chunks.current = []; // Clear previous chunks
+        
         mediaRecorder.current.ondataavailable = (e) => {
           if (e.data.size > 0) {
             chunks.current.push(e.data)
           }
         }
+
         mediaRecorder.current.onstop = () => {
-          const recordedBlob = new Blob(chunks.current, { type: "audio/webm" })
+          const recordedBlob = new Blob(chunks.current, { type: mimeType || 'audio/webm' })
           const url = URL.createObjectURL(recordedBlob)
           setRecordedUrl(url)
-          chunks.current = []
+          console.log("Recording stopped, audio URL created")
+          sendAudioMessage(recordedBlob, url)
         }
+        
+        mediaRecorder.current.onerror = (event) => {
+          console.error("MediaRecorder error:", event.error);
+          setRecordingError(`Recording error: ${event.error}`);
+          setIsRecording(false);
+        };
+
         mediaRecorder.current.start()
+        console.log("Recording started with mime type:", mimeType || "default");
+        setRecordingError(""); // Clear any previous error
       } catch (error) {
         console.error("Error accessing microphone:", error)
+        setRecordingError(`Error accessing microphone: ${error.name}: ${error.message}`);
+        setIsRecording(false);
+        return; // Don't update isRecording state if we failed
       }
     }
 
     setIsRecording(!isRecording)
   }
 
-  const sendAudioMessage = () => {
-    if (!recordedUrl) return
+  const sendAudioMessage = async (blob, url) => {
+    if (!blob) return
 
-    // Add user audio message
-    const audioMessage = {
-      id: Date.now(),
-      sender: "user",
-      isAudio: true,
-      audioUrl: recordedUrl,
-      timestamp: new Date(),
+    // Create a form data object to send the audio file
+    const formData = new FormData()
+    formData.append('audio', blob, 'recording.' + (blob.type.split('/')[1] || 'webm'))
+
+    try {
+        // Send to your backend
+        console.log("A")
+        const response = await fetch('http://localhost:5000/transcribe', {
+            method: 'POST',
+            body: formData
+        })
+
+        console.log("B")
+        
+        if (!response.ok) {
+            throw new Error(`Failed to send audio: ${response.status}`)
+        }
+
+        // Add user audio message to chat
+        const audioMessage = {
+            id: Date.now(),
+            sender: "user",
+            isAudio: true,
+            audioUrl: url,
+            timestamp: new Date(),
+        }
+
+        setMessages((prevMessages) => [...prevMessages, audioMessage])
+        setRecordedUrl("")
+
+        // Simulate assistant response after a short delay
+        setTimeout(() => {
+            const assistantMessage = {
+                id: Date.now() + 1,
+                sender: "assistant",
+                text: "I've received your audio message. Our health team will listen to it and get back to you soon.",
+                timestamp: new Date(),
+            }
+            setMessages((prevMessages) => [...prevMessages, assistantMessage])
+        }, 1000)
+
+    } catch (error) {
+        console.error("Error sending audio:", error)
+        // Show error in chat
+        const errorMessage = {
+            id: Date.now() + 1,
+            sender: "assistant",
+            text: `Unable to process audio: ${error.message}. Please try again.`,
+            timestamp: new Date(),
+        }
+        setMessages((prevMessages) => [...prevMessages, errorMessage])
     }
-
-    setMessages((prevMessages) => [...prevMessages, audioMessage])
-    setRecordedUrl("")
-
-    // Simulate assistant response after a short delay
-    setTimeout(() => {
-      const assistantMessage = {
-        id: Date.now() + 1,
-        sender: "assistant",
-        text: "I've received your audio message. Our health team will listen to it and get back to you soon.",
-        timestamp: new Date(),
-      }
-      setMessages((prevMessages) => [...prevMessages, assistantMessage])
-    }, 1000)
   }
 
   return (
@@ -135,6 +242,9 @@ const ChatPage = () => {
             <div className="card-header">
               <div className="card-title">Health Assistant</div>
               <div className="card-description">Chat with our health support team</div>
+              {recordingError && (
+                <div className="text-red-500 text-sm mt-1">{recordingError}</div>
+              )}
             </div>
 
             <div className="card-content h-[calc(100vh-20rem)] overflow-y-auto pr-4">
@@ -151,13 +261,10 @@ const ChatPage = () => {
                         {message.sender === "user" ? (
                           <>
                             <User className="h-6 w-6"/>
-                            {/* <img src="https://via.placeholder.com/32" alt="User" className="avatar-image" /> */}
-                            {/* <div className="avatar-fallback"></div> */}
                           </>
                         ) : (
                           <>
                             <img src={logo} alt="Assistant" className="avatar-image" />
-                            {/* <div className="avatar-fallback">HA</div> */}
                           </>
                         )}
                       </div>
@@ -197,7 +304,7 @@ const ChatPage = () => {
                 {recordedUrl ? (
                   <div className="flex items-center gap-2">
                     <audio controls src={recordedUrl} className="h-8" />
-                    <button className="btn btn-primary btn-icon rounded-full" onClick={sendAudioMessage}>
+                    <button className="btn btn-primary btn-icon rounded-full" onClick={() => sendAudioMessage(null, recordedUrl)}>
                       <Send className="h-4 w-4" />
                     </button>
                   </div>
@@ -229,4 +336,3 @@ const ChatPage = () => {
 }
 
 export default ChatPage
-

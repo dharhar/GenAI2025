@@ -1,4 +1,9 @@
+ffmpeg
 flask
+numpy<2.0
+jwt
+falsk_cors
+pydub
 deepspeech==0.9.3
 torch
 transformers
