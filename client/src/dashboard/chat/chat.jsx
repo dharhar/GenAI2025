@@ -121,7 +121,7 @@ const ChatPage = () => {
         mediaStream.current = stream;
         
         // Use browser's native MediaRecorder with fallback for different formats
-        const mimeTypes = ['audio/wav'];
+        const mimeTypes = ['audio/mp3'];
         let mimeType = '';
         
         // Find a supported mime type
@@ -180,29 +180,41 @@ const ChatPage = () => {
     formData.append('audio', blob, 'recording.' + (blob.type.split('/')[1] || 'webm'))
 
     try {
-        // Send to your backend
-        console.log("A")
         const response = await fetch('http://localhost:5000/transcribe', {
             method: 'POST',
             body: formData
         })
-
-        console.log("B")
         
         if (!response.ok) {
             throw new Error(`Failed to send audio: ${response.status}`)
         }
 
+        // console.log(response.text())
+        const data = await response.text() // this is already transcribed
+        // console.log(data)
+        // const transcription = data.transcription || "Transcription Unavailable"
+        // console.log(transcription)
+
         // Add user audio message to chat
-        const audioMessage = {
-            id: Date.now(),
-            sender: "user",
-            isAudio: true,
-            audioUrl: url,
-            timestamp: new Date(),
+        // const audioMessage = {
+        //     id: Date.now(),
+        //     sender: "user",
+        //     isAudio: true,
+        //     audioUrl: url,
+        //     timestamp: new Date(),
+        // }
+
+        // setMessages((prevMessages) => [...prevMessages, audioMessage])
+
+        // Add transcription message
+        const transcriptionMessage = {
+          id: Date.now() + 1,
+          sender: "user",
+          text: `${data}`,
+          timestamp: new Date(),
         }
 
-        setMessages((prevMessages) => [...prevMessages, audioMessage])
+        setMessages((prevMessages) => [...prevMessages, transcriptionMessage])       
         setRecordedUrl("")
 
         // Simulate assistant response after a short delay
