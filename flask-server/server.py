@@ -7,6 +7,7 @@ from flask_cors import CORS
 import jwt
 import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
+from webm_to_wav.converter import convert_webm_to_wav
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -115,8 +116,26 @@ def get_profile():
     except jwt.InvalidTokenError:
         return jsonify({'message': 'Invalid token'}), 401
 
-@app.route("/transcribe")
+@app.route("/", methods=['GET'])
+def health_check():
+    return jsonify({"status": "ok", "message": "Server is running"}), 200
+
+
+@app.route("/transcribe", methods=['POST'])
 def transcribe():
+    # print(request)
+    # print("*"* 100)
+    audio_file = request.files['audio']
+    # print("*"*50)
+    # print(audio_file)
+    # print(type(audio_file))
+    # print("lajsdladsj")
+    # print("*"*50)
+
+    audio_wav = convert_webm_to_wav(audio_file)
+    # print(audio_wav)
+    # print(type(audio_wav))
+
     return transcribe_api()
 
 # @app.route("/medical_inference")

@@ -14,5 +14,9 @@ def setup():
     return model, tokenizer, deepspeech_model 
 
 def transcribe_api(model, audio_file):
+    print(model)
+    
+    print(audio_file)
+    print("CALLING TRANSCRIBE IN TRANSCRIBE_API") # TODO: remove
     return transcribe(model, audio_file)
 
