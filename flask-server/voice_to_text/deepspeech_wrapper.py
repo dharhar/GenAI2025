@@ -28,4 +28,6 @@ def transcribe(model: Model, audio_file: str):
         audio = np.frombuffer(frames, dtype=np.int16)
 
     # Run transcription
-    return model.stt(audio)
+    ret = model.stt(audio)
+    print("Transcription: ", ret)
+    return ret

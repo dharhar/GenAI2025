@@ -14,9 +14,10 @@ def setup():
     return model, tokenizer, deepspeech_model 
 
 def transcribe_api(model, audio_file):
-    print(model)
-    
+
     print(audio_file)
     print("CALLING TRANSCRIBE IN TRANSCRIBE_API") # TODO: remove
+    print("*" * 100)
+    print("*" * 100)
     return transcribe(model, audio_file)
 
