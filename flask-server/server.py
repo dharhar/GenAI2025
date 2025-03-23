@@ -2,6 +2,7 @@ import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from flask import Flask, request, jsonify
+from dotenv import load_dotenv
 from backend_api import *
 from flask_cors import CORS
 import jwt
@@ -119,14 +120,88 @@ def get_profile():
 def transcribe():
     return transcribe_api()
 
-# @app.route("/medical_inference")
+@app.route('/medical_inference', methods=['POST'])
+def medical_inference():
+    
+    username = request.form.get("username")
+    prompt = request.files.get("prompt")
+    
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    load_dotenv()
+    cipher = Fernet(os.getenv("FERNET_KEY"))
+    data_path = current_dir + "./medical_data/user_data.json"
+    data = load_data(data_path, cipher)
+    
+    for user in data:
+        if user["username"] == username:
+            user_class = UserMedicalProfile(user["user_id"], user["username"], user["password"], user["weight"], user["height"], user["name"], user["age"], user["gender"], user["medical_conditions"])
+            return diagnoisis_cb(user_class, model, tokenizer, prompt)
+    
 
-# @app.route("/signup")
+@app.route("/signup", methods=["POST"])
+def signup():
+    
+    username = request.form.get('username')
+    password = request.form.get('password')
+    weight = request.form.get('weight', type=float)
+    height = request.form.get('height', type=float)
+    name = request.form.get('name')
+    age = request.form.get('age')
+    gender = request.form.get('gender')
+    
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    load_dotenv()
+    cipher = Fernet(os.getenv("FERNET_KEY"))
+    data_path = current_dir + "./medical_data/user_data.json"
+    data = load_data(data_path, cipher)
+    for user in data:
+        if username == user["username"]:
+            return 404
+    new_user = UserMedicalProfile(len(data) + 1, username, password, weight, height, name, age, gender, {})
+    new_user.save_to_data(data_path, cipher)
+    return 200
 
-# @app.route("/login")
+@app.route("/login")
+def login():
+    
+    username = request.form.get('username')
+    password = request.form.get('password')
 
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    load_dotenv()
+    cipher = Fernet(os.getenv("FERNET_KEY"))
+    data_path = current_dir + "./medical_data/user_data.json"
+    data = load_data(data_path, cipher)
+    
+    for user in data:
+        if user["username"] == username and user["password"] == password:
+            return user
+    return None
 
-
+@app.route("/update")
+def update_user_info(username: str, condition: str, details):
+    
+    username = request.form.get('username')
+    condition = request.form.get('condition')
+    details = request.form.get('details')
+    
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    load_dotenv()
+    cipher = Fernet(os.getenv("FERNET_KEY"))
+    data_path = current_dir + "./medical_data/user_data.json"
+    data = load_data(data_path, cipher)
+    
+    for user in data:
+        if user["username"] == username:
+            if condition in user["medical_conditions"]:
+                user["medical_conditions"][condition] = user["medical_conditions"][condition].append(details)
+            else:
+                user["medical_conditions"][condition] = [details]
+    
+    encrypted_data = cipher.encrypt(data.encode())
+    with open(data_path, "wb") as f:
+        f.write(encrypted_data)
+            
 if __name__ == '__main__':
     model, tokenizer, deepspeech_model = setup()
     app.run(debug=True, port=5000)
